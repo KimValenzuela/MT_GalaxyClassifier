@@ -77,7 +77,7 @@ class TrainerGalaxyClassifier:
         self.model.train()
         train_loss = 0.0
 
-        for x, y, _ in self.train_loader:
+        for x, y in self.train_loader:
             x = x.to(self.device)
             y = y.to(self.device)
 
@@ -104,7 +104,7 @@ class TrainerGalaxyClassifier:
         val_loss = 0.0
 
         with torch.no_grad():
-            for x, y, _ in self.val_loader:
+            for x, y in self.val_loader:
                 x = x.to(self.device)
                 y = y.to(self.device)
 
@@ -156,8 +156,8 @@ class TrainerGalaxyClassifier:
 
             print(
                 f"Epoch [{epoch + 1}/{epochs}] | "
-                f"Train Loss: {train_loss: .4f}, F1: {train_f1score: .4f} | "
-                f"Val Loss: {val_loss: .4f}, F1: {val_f1score: .4f}"
+                f"Train Loss: {train_loss: .4f}, Acc: {train_accuracy: .4f}, F1: {train_f1score: .4f} | "
+                f"Val Loss: {val_loss: .4f}, Acc: {val_accuracy: .4f}, F1: {val_f1score: .4f}"
             )
 
             if val_f1score > best_val_f1:
