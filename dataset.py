@@ -64,7 +64,7 @@ class PreprocessImage(Dataset):
         img = self._load_fits(img_id)
         img = self._preprocess_image(img)
 
-        if self.transform is not None:
+        if self.transform:
             img = self.transform(img)
 
         # Soft label
