@@ -66,8 +66,5 @@ class GalaxyDataset(Dataset):
         probs = row[CLASS_COLS].astype(float).to_numpy(dtype="float32")
         y = torch.from_numpy(probs)
 
-        # Hard label (aux)
-        hard_label = int(torch.argmax(y).item())
-
-        return img, y, hard_label
+        return img, y
 
