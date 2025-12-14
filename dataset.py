@@ -79,7 +79,7 @@ class GalaxyDataset:
         self, 
         labels_path: str,
         img_dir: str,
-        class_col: list,
+        class_cols: list,
         img_size: int = 80,
         batch_size: int = 32,
         test_size: float = 0.2,
@@ -92,7 +92,7 @@ class GalaxyDataset:
     ):
         self.labels_path = labels_path
         self.img_dir = img_dir
-        self.class_col = class_col
+        self.class_cols = class_cols
         self.img_size = img_size
         self.batch_size = batch_size
         self.test_size = test_size
@@ -101,7 +101,7 @@ class GalaxyDataset:
         self.use_weighted_sampler = use_weighted_sampler
         self.eps = eps
 
-        self.num_classes = len(class_col)
+        self.num_classes = len(class_cols)
 
         # Transforms
         self.train_transform = train_transform or self._default_train_transform()
@@ -132,11 +132,11 @@ class GalaxyDataset:
     def setup(self):
         df = pd.read_csv(self.labels_path)
 
-        for col in self.class_col:
+        for col in self.class_cols:
             df[col] = pd.to_numeric(df[col], errors="coerce")
 
         # Hard labels para estratificación
-        probs = df[self.class_col].values
+        probs = df[self.class_cols].values
         df["hard_label"] = probs.argmax(axis=1)
 
         # Split estratificado
@@ -149,13 +149,13 @@ class GalaxyDataset:
         )
 
         # Datasets
-        self.train_dataset = GalaxyDataset(
+        self.train_dataset = PreprocessImage(
             self.train_df,
             self.img_dir,
             transform=self.train_transform
         )
 
-        self.val_dataset = GalaxyDataset(
+        self.val_dataset = PreprocessImage(
             self.val_df,
             self.img_dir,
             transform=self.val_transform
