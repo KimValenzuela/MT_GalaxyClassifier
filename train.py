@@ -58,11 +58,11 @@ class TrainerGalaxyClassifier:
         self.class_names = class_names
 
         #Metricas
-        self.train_accuracy = Accuracy(task="multiclass", num_classes=num_classes)
-        self.val_accuracy = Accuracy(task="multiclass", num_classes=num_classes)
-        self.train_f1score = F1Score(task="multiclass", num_classes=num_classes)
-        self.val_f1score = F1Score(task="multiclass", num_classes=num_classes)
-        self.confusion_matrix = ConfusionMatrix(task="multiclass", num_classes=num_classes)
+        self.train_accuracy = Accuracy(task="multiclass", num_classes=num_classes).to(device)
+        self.val_accuracy = Accuracy(task="multiclass", num_classes=num_classes).to(device)
+        self.train_f1score = F1Score(task="multiclass", num_classes=num_classes).to(device)
+        self.val_f1score = F1Score(task="multiclass", num_classes=num_classes).to(device)
+        self.confusion_matrix = ConfusionMatrix(task="multiclass", num_classes=num_classes, normalize="true").to(device)
 
         self.history = {
             "train_loss": [],
