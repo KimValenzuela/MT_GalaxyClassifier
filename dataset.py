@@ -17,7 +17,7 @@ CLASS_COLS = [
     "p_unclassifiable",
 ]
 
-class PreprocessImages(Dataset):
+class PreprocessImage(Dataset):
     def __init__(self, df, img_dir, transform=None, log_scale=True, eps=1e-8):
         """
         df: DataFrame con columnas [ID] + CLASS_COLS
