@@ -58,7 +58,7 @@ class TrainerGalaxyClassifier:
         # macro -> calcula estadísticas por cada etiqueta y las promedia
         self.train_f1score = F1Score(task="multiclass", num_classes=num_classes, average="macro").to(device)
         self.val_f1score = F1Score(task="multiclass", num_classes=num_classes, average="macro").to(device)
-        self.val_f1score_topk = F1Score(task="multiclass", num_classes=num_classes, average=None, top_k=2).to(device)
+        #self.val_f1score_topk = F1Score(task="multiclass", num_classes=num_classes, average=None, top_k=2).to(device)
         self.confusion_matrix = ConfusionMatrix(task="multiclass", num_classes=num_classes, normalize="true").to(device)
 
         self.history = {
@@ -87,7 +87,7 @@ class TrainerGalaxyClassifier:
 
             train_loss += loss.item()
 
-            preds = logits.argmax(dim=1) 
+            preds = logits
             targets = y.argmax(dim=1)
 
             self.train_accuracy.update(preds, targets)
@@ -112,11 +112,8 @@ class TrainerGalaxyClassifier:
 
                 targets = y.argmax(dim=1)
                 
-                if self.use_soft_labels:
-                    preds = logits
-                    self.val_f1score_topk.update(preds, targets)
-                else:
-                    preds = logits.argmax(dim=1)
+                preds = logits
+                targets = y.argmax(dim=1)
 
                 self.val_accuracy.update(preds, targets)
                 self.val_f1score.update(preds, targets)
@@ -136,9 +133,6 @@ class TrainerGalaxyClassifier:
             train_f1score = self.train_f1score.compute().item()
             val_accuracy = self.val_accuracy.compute().item()
             val_f1score = self.val_f1score.compute().item()
-
-            if self.use_soft_labels:
-                val_f1score_topk = self.val_f1score_topk.compute().item()
 
             if self.scheduler:
                 if isinstance(self.scheduler, torch.optim.lr_scheduler.ReduceLROnPlateau):
@@ -161,10 +155,7 @@ class TrainerGalaxyClassifier:
 
             print(f"Epoch [{epoch + 1}/{epochs}]")
             print(f"\tTrain → Loss: {train_loss: .4f} | Acc: {train_accuracy: .4f} | F1: {train_f1score: .4f}")
-            if self.use_soft_labels:
-                print(f"\tVal → Loss: {val_loss: .4f} | Acc: {val_accuracy: .4f} | F1: {val_f1score: .4f} | F1 (topk): {val_f1score_topk: .4f}")
-            else:
-                print(f"\tVal → Loss: {val_loss: .4f} | Acc: {val_accuracy: .4f} | F1: {val_f1score: .4f}")
+            print(f"\tVal → Loss: {val_loss: .4f} | Acc: {val_accuracy: .4f} | F1: {val_f1score: .4f}")
 
             if val_f1score > best_val_f1:
                 best_val_f1 = val_f1score
@@ -174,8 +165,6 @@ class TrainerGalaxyClassifier:
             self.train_f1score.reset()
             self.val_accuracy.reset()
             self.val_f1score.reset()
-            if self.use_soft_labels:
-                self.val_f1score_topk.reset()
 
 
     def plot_confusion_matrix(self):
