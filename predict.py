@@ -57,8 +57,8 @@ class GalaxyPredictor:
         return pd.DataFrame(results)
 
 
-    def save_csv(self, df):
-        df.to_csv(os.path.join(self.root_path, "clash_predictions.csv"), index=False)
+    def save_csv(self, df, file_name="clash_predictions"):
+        df.to_csv(os.path.join(self.root_path, f"{file_name}.csv"), index=False)
 
     
     def visualize_sample(

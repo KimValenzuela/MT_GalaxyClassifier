@@ -13,7 +13,6 @@ CLASS_COLS = [
     "p_smooth",
     "p_features",
     "p_irregular",
-    "p_point_source",
     "p_unclassifiable",
 ]
 
